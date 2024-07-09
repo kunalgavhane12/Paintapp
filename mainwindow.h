@@ -34,6 +34,8 @@ private slots:
     void penColor();
     void penWidth();
     void drawRect();
+    void drawEllipse();
+    void drawCircle();
 
 private:
     void createActions();
@@ -57,6 +59,7 @@ private:
     QAction *exitAct;
     QAction *drawRectAct;
     QAction *drawEllipseAct;
+    QAction *drawCircleAct;
 
 };
 #endif // MAINWINDOW_H

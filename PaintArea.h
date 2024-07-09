@@ -21,6 +21,12 @@ public:
 
 public slots:
     void clearImage();
+    void drawRect(const QRect &rect);
+    void drawEllipse(const QRect &rect);
+    void drawCircle(const QRect &rect);
+//    void drawRect();
+//    void drawEllipse();
+//    void drawCircle();
 
 protected:
     void mousePressEvent(QMouseEvent *event)override;

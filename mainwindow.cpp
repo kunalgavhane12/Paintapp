@@ -13,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
+//    ui->setupUi(this);
     paintArea = new PaintArea;
     setCentralWidget(paintArea);
     createActions();
@@ -83,10 +83,20 @@ void MainWindow::penWidth()
 
 void MainWindow::drawRect()
 {
-    QPainter painter;
-//    painter.setPen(QPen(myPenColor,myPenWidth,Qt::SolidLine, Qt::RoundCap,Qt::RoundJoin));
-    painter.drawRect(10,10,100,100);
+    QRect rect = QRect(10, 10, 100, 100);
+    paintArea->drawRect(rect);
+}
 
+void MainWindow::drawEllipse()
+{
+    QRect rect = QRect(10, 150, 100, 100);
+    paintArea->drawEllipse(rect);
+}
+
+void MainWindow::drawCircle()
+{
+    QRect rect = QRect(10, 300, 100, 100);
+    paintArea->drawCircle(rect);
 }
 
 void MainWindow::createActions()
@@ -94,6 +104,7 @@ void MainWindow::createActions()
     openAct = new QAction(tr("&Open..."), this);
     openAct->setShortcuts(QKeySequence::Open);
     connect(openAct, SIGNAL(triggered()), this, SLOT(open()));
+
     foreach (QByteArray format, QImageWriter::supportedImageFormats()) {
         QString text = tr("%1...").arg(QString(format).toUpper());
 
@@ -120,8 +131,11 @@ void MainWindow::createActions()
     drawRectAct = new QAction(tr("Draw Rect..."), this);
     connect(drawRectAct, SIGNAL(triggered()), this, SLOT(drawRect()));
 
-    drawEllipseAct = new QAction(tr("Draw Elipse..."), this);
+    drawEllipseAct = new QAction(tr("Draw Ellipse..."), this);
     connect(drawEllipseAct, SIGNAL(triggered()), this, SLOT(drawEllipse()));
+
+    drawCircleAct = new QAction(tr("Draw Circle..."), this);
+    connect(drawCircleAct, SIGNAL(triggered()), this, SLOT(drawCircle()));
 
 }
 
@@ -143,9 +157,10 @@ void MainWindow::createMenus()
     optionMenu->addSeparator();
     optionMenu->addAction(clearScreenAct);
 
-    drawMenu = new QMenu(tr("Draw Shape"),this);
+    drawMenu = new QMenu(tr("Draw Shape"), this);
     drawMenu->addAction(drawRectAct);
     drawMenu->addAction(drawEllipseAct);
+    drawMenu->addAction(drawCircleAct);
 
     menuBar()->addMenu(fileMenu);
     menuBar()->addMenu(optionMenu);
