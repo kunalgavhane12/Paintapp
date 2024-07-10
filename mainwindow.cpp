@@ -11,9 +11,9 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+    //    , ui(new Ui::MainWindow)
 {
-//    ui->setupUi(this);
+    //    ui->setupUi(this);
     paintArea = new PaintArea;
     setCentralWidget(paintArea);
     createActions();
@@ -25,7 +25,8 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-    delete ui;
+    //    delete ui;
+    delete paintArea;
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -99,9 +100,19 @@ void MainWindow::drawCircle()
     paintArea->drawCircle(rect);
 }
 
+void MainWindow::drawPolygon()
+{
+    QPolygon poly;
+    poly<<QPoint(40,560);
+    poly<<QPoint(120,580);
+    poly<<QPoint(120,590);
+    poly<<QPoint(50,600);
+    paintArea->drawPolygon(poly);
+}
+
 void MainWindow::createActions()
 {
-    openAct = new QAction(tr("&Open..."), this);
+    openAct = new QAction(tr("&Open"), this);
     openAct->setShortcuts(QKeySequence::Open);
     connect(openAct, SIGNAL(triggered()), this, SLOT(open()));
 
@@ -118,24 +129,34 @@ void MainWindow::createActions()
     exitAct->setShortcuts(QKeySequence::Quit);
     connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
 
-    penColorAct = new QAction(tr("Pen Color..."), this);
+    penColorAct = new QAction(tr("Pen Color"), this);
     connect(penColorAct, SIGNAL(triggered()), this, SLOT(penColor()));
 
-    penWidthAct = new QAction(tr("Pen Width..."), this);
+    penWidthAct = new QAction(tr("Pen Width"), this);
     connect(penWidthAct, SIGNAL(triggered()), this, SLOT(penWidth()));
 
     clearScreenAct = new QAction(tr("Clear Screen"), this);
     clearScreenAct->setShortcut(tr("Ctrl+L"));
     connect(clearScreenAct, SIGNAL(triggered()), paintArea, SLOT(clearImage()));
 
-    drawRectAct = new QAction(tr("Draw Rect..."), this);
+    drawRectAct = new QAction(tr("Draw Rect"), this);
     connect(drawRectAct, SIGNAL(triggered()), this, SLOT(drawRect()));
 
-    drawEllipseAct = new QAction(tr("Draw Ellipse..."), this);
+    drawEllipseAct = new QAction(tr("Draw Ellipse"), this);
     connect(drawEllipseAct, SIGNAL(triggered()), this, SLOT(drawEllipse()));
 
-    drawCircleAct = new QAction(tr("Draw Circle..."), this);
+    drawCircleAct = new QAction(tr("Draw Circle"), this);
     connect(drawCircleAct, SIGNAL(triggered()), this, SLOT(drawCircle()));
+
+    polygonAct = new QAction(tr("Draw Polygon"), this);
+    connect(polygonAct, SIGNAL(triggered()), this, SLOT(drawPolygon()));
+
+    scalingAct = new QAction(tr("Scale"), this);
+    connect(scalingAct, SIGNAL(triggered()), this, SLOT(drawCircle()));
+    rotationAct = new QAction(tr("Rotation"), this);
+    connect(rotationAct, SIGNAL(triggered()), this, SLOT(drawCircle()));
+    translationAct = new QAction(tr("Translation"), this);
+    connect(translationAct, SIGNAL(triggered()), this, SLOT(drawCircle()));
 
 }
 
@@ -161,10 +182,17 @@ void MainWindow::createMenus()
     drawMenu->addAction(drawRectAct);
     drawMenu->addAction(drawEllipseAct);
     drawMenu->addAction(drawCircleAct);
+    drawMenu->addAction(polygonAct);
+
+    transformationMenu = new QMenu(tr("Transformation"), this);
+    transformationMenu->addAction(scalingAct);
+    transformationMenu->addAction(rotationAct);
+    transformationMenu->addAction(translationAct);
 
     menuBar()->addMenu(fileMenu);
     menuBar()->addMenu(optionMenu);
     menuBar()->addMenu(drawMenu);
+    menuBar()->addMenu(transformationMenu);
 }
 
 bool MainWindow::maybesave()
@@ -173,7 +201,7 @@ bool MainWindow::maybesave()
     {
         QMessageBox::StandardButton ret;
         ret = QMessageBox::warning(this, tr("Paint"), tr("The image has been Modified.\n"
-                                                            "Do you want to save your changes?"),
+                                                         "Do you want to save your changes?"),
                                    QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
         if(ret == QMessageBox::Save)
         {
@@ -205,4 +233,3 @@ bool MainWindow::saveFile(const QByteArray &fileFormat)
     }
 
 }
-

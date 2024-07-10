@@ -4,7 +4,7 @@
 
 PaintArea::PaintArea(QWidget *parent) : QWidget(parent)
 {
-//    setAttribute(Qt::WA_StaticContents);
+    setAttribute(Qt::WA_StaticContents);
     modified = false;
     scribbling = false;
     myPenWidth = 1;
@@ -64,7 +64,7 @@ void PaintArea::drawRect(const QRect &rect)
     painter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     painter.drawRect(rect);
     modified = true;
-    update(rect.normalized());
+    update();
 }
 
 void PaintArea::drawEllipse(const QRect &rect)
@@ -73,7 +73,7 @@ void PaintArea::drawEllipse(const QRect &rect)
     painter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     painter.drawEllipse(rect);
     modified = true;
-    update(rect.normalized());
+    update();
 }
 
 void PaintArea::drawCircle(const QRect &rect)
@@ -82,8 +82,18 @@ void PaintArea::drawCircle(const QRect &rect)
     painter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     painter.drawEllipse(rect.normalized());
     modified = true;
-    update(rect.normalized());
+    update();
 }
+
+void PaintArea::drawPolygon(const QPolygon &poly)
+{
+    QPainter painter(&image);
+    painter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    painter.drawPolygon(poly);
+    modified = true;
+    update();
+}
+
 void PaintArea::mousePressEvent(QMouseEvent *event)
 {
     if(event->button() == Qt::LeftButton)

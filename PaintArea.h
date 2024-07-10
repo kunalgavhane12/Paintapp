@@ -24,6 +24,7 @@ public slots:
     void drawRect(const QRect &rect);
     void drawEllipse(const QRect &rect);
     void drawCircle(const QRect &rect);
+    void drawPolygon(const QPolygon &poly);
 //    void drawRect();
 //    void drawEllipse();
 //    void drawCircle();

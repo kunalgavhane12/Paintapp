@@ -7,12 +7,12 @@
 #include <QAction>
 #include <QMenu>
 #include <QByteArray>
+#include "PaintArea.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
-class PaintArea;
 
 class MainWindow : public QMainWindow
 {
@@ -22,8 +22,8 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-private:
-    Ui::MainWindow *ui;
+//private:
+//    Ui::MainWindow *ui;
 
 protected:
     void closeEvent(QCloseEvent *event)override;
@@ -36,6 +36,7 @@ private slots:
     void drawRect();
     void drawEllipse();
     void drawCircle();
+    void drawPolygon();
 
 private:
     void createActions();
@@ -49,6 +50,7 @@ private:
     QMenu *fileMenu;
     QMenu *optionMenu;
     QMenu *drawMenu;
+    QMenu *transformationMenu;
 
     QAction *openAct;
 
@@ -60,6 +62,10 @@ private:
     QAction *drawRectAct;
     QAction *drawEllipseAct;
     QAction *drawCircleAct;
+    QAction *polygonAct;
+    QAction *scalingAct;
+    QAction *rotationAct;
+    QAction *translationAct;
 
 };
 #endif // MAINWINDOW_H
