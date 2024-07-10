@@ -82,33 +82,52 @@ void MainWindow::penWidth()
     }
 }
 
-void MainWindow::drawRect()
+void MainWindow::drawLine()
 {
-    QRect rect = QRect(10, 10, 100, 100);
-    paintArea->drawRect(rect);
+    paintArea->setShapeToDraw(PaintArea::Line);
+}
+
+void MainWindow::drawRectangle()
+{
+    paintArea->setShapeToDraw(PaintArea::Rectangle);
 }
 
 void MainWindow::drawEllipse()
 {
-    QRect rect = QRect(10, 150, 100, 100);
-    paintArea->drawEllipse(rect);
+    paintArea->setShapeToDraw(PaintArea::Ellipse);
 }
 
 void MainWindow::drawCircle()
 {
-    QRect rect = QRect(10, 300, 100, 100);
-    paintArea->drawCircle(rect);
+    paintArea->setShapeToDraw(PaintArea::Circle);
 }
 
 void MainWindow::drawPolygon()
 {
-    QPolygon poly;
-    poly<<QPoint(40,560);
-    poly<<QPoint(120,580);
-    poly<<QPoint(120,590);
-    poly<<QPoint(50,600);
-    paintArea->drawPolygon(poly);
+    paintArea->setShapeToDraw(PaintArea::Polygon);
 }
+
+void MainWindow::scale()
+{
+
+}
+
+void MainWindow::rotate()
+{
+
+}
+
+void MainWindow::translate()
+{
+
+}
+
+
+void MainWindow::drawShape(PaintArea::ShapeType shape)
+{
+    paintArea->setShapeToDraw(shape);
+}
+
 
 void MainWindow::createActions()
 {
@@ -139,8 +158,11 @@ void MainWindow::createActions()
     clearScreenAct->setShortcut(tr("Ctrl+L"));
     connect(clearScreenAct, SIGNAL(triggered()), paintArea, SLOT(clearImage()));
 
-    drawRectAct = new QAction(tr("Draw Rect"), this);
-    connect(drawRectAct, SIGNAL(triggered()), this, SLOT(drawRect()));
+    drawLineAct = new QAction(tr("Draw Line"), this);
+    connect(drawLineAct, SIGNAL(triggered()), this, SLOT(drawLine()));
+
+    drawRectAct = new QAction(tr("Draw Rectangle"), this);
+    connect(drawRectAct, SIGNAL(triggered()), this, SLOT(drawRectangle()));
 
     drawEllipseAct = new QAction(tr("Draw Ellipse"), this);
     connect(drawEllipseAct, SIGNAL(triggered()), this, SLOT(drawEllipse()));
@@ -152,11 +174,11 @@ void MainWindow::createActions()
     connect(polygonAct, SIGNAL(triggered()), this, SLOT(drawPolygon()));
 
     scalingAct = new QAction(tr("Scale"), this);
-    connect(scalingAct, SIGNAL(triggered()), this, SLOT(drawCircle()));
+//    connect(scalingAct, SIGNAL(triggered()), this, SLOT(scale()));
     rotationAct = new QAction(tr("Rotation"), this);
-    connect(rotationAct, SIGNAL(triggered()), this, SLOT(drawCircle()));
+//    connect(rotationAct, SIGNAL(triggered()), this, SLOT(rotate()));
     translationAct = new QAction(tr("Translation"), this);
-    connect(translationAct, SIGNAL(triggered()), this, SLOT(drawCircle()));
+//    connect(translationAct, SIGNAL(triggered()), this, SLOT(translate()));
 
 }
 
@@ -179,6 +201,7 @@ void MainWindow::createMenus()
     optionMenu->addAction(clearScreenAct);
 
     drawMenu = new QMenu(tr("Draw Shape"), this);
+    drawMenu->addAction(drawLineAct);
     drawMenu->addAction(drawRectAct);
     drawMenu->addAction(drawEllipseAct);
     drawMenu->addAction(drawCircleAct);

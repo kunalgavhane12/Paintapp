@@ -1,6 +1,7 @@
 #include "PaintArea.h"
 #include <QMouseEvent>
 #include <QPainter>
+#include <QPolygon>
 
 PaintArea::PaintArea(QWidget *parent) : QWidget(parent)
 {
@@ -58,67 +59,96 @@ void PaintArea::clearImage()
     update();
 }
 
-void PaintArea::drawRect(const QRect &rect)
-{
-    QPainter painter(&image);
-    painter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-    painter.drawRect(rect);
-    modified = true;
-    update();
-}
+//void PaintArea::drawLines(const QPoint &endPoint)
+//{
+//    n = 1;
+//    QPainter painter(&image);
+//    painter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+//    painter.drawLine(lastPoint,endPoint);
+//    modified = true;
+//    update();
+//}
 
-void PaintArea::drawEllipse(const QRect &rect)
-{
-    QPainter painter(&image);
-    painter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-    painter.drawEllipse(rect);
-    modified = true;
-    update();
-}
+//void PaintArea::drawRects(const QPoint &endPoint)
+//{
+//    n = 2;
+//    QPainter painter(&image);
+//    painter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+//    painter.drawRect(lastPoint,endPoint);
+//    modified = true;
+//    update();
+//}
 
-void PaintArea::drawCircle(const QRect &rect)
-{
-    QPainter painter(&image);
-    painter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-    painter.drawEllipse(rect.normalized());
-    modified = true;
-    update();
-}
+//void PaintArea::drawEllipses(const QPoint &endPoint)
+//{
+//    n = 3;
+//    QPainter painter(&image);
+//    painter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+//    painter.drawEllipse(lastPoint,endPoint);
+//    modified = true;
+//    update();
+//}
 
-void PaintArea::drawPolygon(const QPolygon &poly)
-{
-    QPainter painter(&image);
-    painter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-    painter.drawPolygon(poly);
-    modified = true;
-    update();
-}
+//void PaintArea::drawCircles(const QPoint &endPoint)
+//{
+//    n = 4;
+//    QPainter painter(&image);
+//    painter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+//    painter.drawEllipse(lastPoint,endPoint);
+//    modified = true;
+//    update();
+//}
+
+//void PaintArea::drawPolygons(const QPoint &endPoint)
+//{
+//    n = 5;
+//    QPainter painter(&image);
+//    painter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+//    painter.drawPolygon(lastPoint,endPoint);
+//    modified = true;
+//    update();
+//}
 
 void PaintArea::mousePressEvent(QMouseEvent *event)
 {
     if(event->button() == Qt::LeftButton)
     {
-        lastPoint = event->pos();
-        scribbling = true;
+        startPosition = event->pos();
+        endPosition = startPosition;
+
+        drawing = true;
+//        update();
+//        lastPoint = event->pos();
+//        scribbling = true;
     }
 }
 
 void PaintArea::mouseMoveEvent(QMouseEvent *event)
 {
-    if((event->buttons() & Qt::LeftButton) && scribbling)
-        drawLineTo(event->pos());
-
+    if (drawing)
+    {
+        endPosition = event->pos();
+//        drawShape(endPosition, event->pos(), shapeToDraw);
+//        update();
+    }
 }
 
 void PaintArea::mouseReleaseEvent(QMouseEvent *event)
 {
-
-    if(event->button() == Qt::LeftButton && scribbling)
+    if(drawing)
     {
-        drawLineTo(event->pos());
-        scribbling = false;
+        drawing = false;
+        endPosition = event->pos();
+        drawShape(startPosition, endPosition, shapeToDraw);
+//        update();
     }
+
+    //    if (event->button() == Qt::LeftButton && scribbling) {
+    //        drawShape(lastPoint, event->pos(), shapeToDraw);
+    //        scribbling = false;
+    //    }
 }
+
 
 void PaintArea::paintEvent(QPaintEvent *event)
 {
@@ -163,4 +193,43 @@ void PaintArea::resizeImage(QImage *image, const QSize &newSize)
     QPainter painter(&newImage);
     painter.drawImage(QPoint(0,0), *image);
     *image = newImage;
+}
+
+void PaintArea::drawShape(const QPoint &startPoint, const QPoint &endPoint, ShapeType shapeType)
+{
+    QPainter painter(&image);
+    painter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+
+    switch (shapeType) {
+    case Line:
+        painter.drawLine(startPoint, endPoint);
+        break;
+    case Rectangle:
+        painter.drawRect(QRect(startPoint, endPoint));
+        break;
+    case Ellipse:
+        painter.drawEllipse(QRect(startPoint, endPoint));
+        break;
+    case Circle:
+        painter.drawEllipse(QRect(startPoint, endPoint));
+        break;
+    case Polygon: {
+        QPolygon polygon;
+        polygon << startPoint << QPoint(endPoint.x(), startPoint.y()) << endPoint
+                << QPoint(startPoint.x(), endPoint.y());
+        painter.drawPolygon(polygon);
+        break;
+    }
+    default:
+        break;
+    }
+
+    modified = true;
+    update();
+}
+
+
+void PaintArea::setShapeToDraw(ShapeType shape)
+{
+    shapeToDraw = shape;
 }

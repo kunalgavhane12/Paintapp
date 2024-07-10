@@ -18,12 +18,19 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
-public:
+public:   
+
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
 //private:
 //    Ui::MainWindow *ui;
+
+public slots:
+    void drawShape(PaintArea::ShapeType shape);
+    void scale();
+    void rotate();
+    void translate();
 
 protected:
     void closeEvent(QCloseEvent *event)override;
@@ -33,7 +40,9 @@ private slots:
     void save();
     void penColor();
     void penWidth();
-    void drawRect();
+
+    void drawRectangle();
+    void drawLine();
     void drawEllipse();
     void drawCircle();
     void drawPolygon();
@@ -60,12 +69,15 @@ private:
     QAction *clearScreenAct;
     QAction *exitAct;
     QAction *drawRectAct;
+    QAction *drawLineAct;
     QAction *drawEllipseAct;
     QAction *drawCircleAct;
     QAction *polygonAct;
     QAction *scalingAct;
     QAction *rotationAct;
     QAction *translationAct;
+
+    int cnt;
 
 };
 #endif // MAINWINDOW_H

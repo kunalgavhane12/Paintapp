@@ -8,6 +8,15 @@ class PaintArea : public QWidget
 {
     Q_OBJECT
 public:
+    enum ShapeType {
+        None,
+        Line,
+        Rectangle,
+        Ellipse,
+        Circle,
+        Polygon
+    }shapeToDraw;
+
     explicit PaintArea(QWidget *parent = nullptr);
 
     bool openImage(const QString &fileName);
@@ -18,16 +27,11 @@ public:
     bool isModified() const{return modified;}
     QColor penColor() const{return myPenColor;}
     int penWidth() const{return myPenWidth;}
+    void setShapeToDraw(ShapeType shape);
 
 public slots:
     void clearImage();
-    void drawRect(const QRect &rect);
-    void drawEllipse(const QRect &rect);
-    void drawCircle(const QRect &rect);
-    void drawPolygon(const QPolygon &poly);
-//    void drawRect();
-//    void drawEllipse();
-//    void drawCircle();
+    void drawShape(const QPoint &startPoint, const QPoint &endPoint, ShapeType shapeType);
 
 protected:
     void mousePressEvent(QMouseEvent *event)override;
@@ -44,9 +48,11 @@ private:
     bool modified;
     bool scribbling;
     int myPenWidth;
-
     QColor myPenColor;
     QImage image;
+    bool drawing;
+    QPoint startPosition;
+    QPoint endPosition;
     QPoint lastPoint;
 
 };
